@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileStack, ListChecks, Newspaper, MapPin, FileText, Building2, Settings, Users, LogOut, Menu, ExternalLink } from "lucide-react";
+import { LayoutDashboard, FileStack, ListChecks, Newspaper, MapPin, FileText, Building2, Settings, Users, LogOut, Menu, ExternalLink, HandHeart, ShoppingBasket } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import useDocumentTitle from "../hooks/useDocumentTitle.js";
 
 const LINKS = [
   ["/admin", LayoutDashboard, "Overview", null, true],
   ["/admin/applications", FileStack, "Applications"],
+  ["/admin/donations", HandHeart, "Donations"],
+  ["/admin/needs", ShoppingBasket, "Needs (donations)"],
   ["/admin/schemes", ListChecks, "Schemes"],
   ["/admin/news", Newspaper, "News & announcements"],
   ["/admin/districts", MapPin, "District offices"],

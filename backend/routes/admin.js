@@ -1,5 +1,6 @@
 const r = require("express").Router();
 const c = require("../controllers/adminController");
+const dc = require("../controllers/donationController");
 const { protect, requireRole } = require("../middleware/auth");
 const { documentUpload } = require("../middleware/upload");
 
@@ -38,6 +39,12 @@ r.put("/institutions/:id", c.updateInstitution);
 r.delete("/institutions/:id", c.deleteInstitution);
 
 r.put("/settings", SUPER, c.updateSettings);
+
+r.get("/donations", dc.adminListDonations);
+r.get("/needs", dc.adminListNeeds);
+r.post("/needs", dc.adminCreateNeed);
+r.put("/needs/:id", dc.adminUpdateNeed);
+r.delete("/needs/:id", dc.adminDeleteNeed);
 
 r.get("/users", SUPER, c.listAdmins);
 r.post("/users", SUPER, c.createAdmin);

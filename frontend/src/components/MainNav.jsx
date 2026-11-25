@@ -11,14 +11,15 @@ export const MENU = [
   { key: "about", children: [["/about", "nav.history"], ["/acts-policies", "nav.acts"], ["/rti", "nav.rti"]] },
   { key: "schemesMenu", children: [["/schemes", "nav.allSchemes"], ["/apply", "nav.applyOnline"], ["/track", "nav.trackApp"]] },
   { key: "disabilities", children: [["/disabilities", "nav.disOverview"], ...DISABILITIES.map((d) => [`/disabilities/${d.slug}`, d.short])] },
-  { key: "services", children: [["/id-card", "nav.idcard"], ["/institutions", "nav.institutions"]] },
-  { to: "/district-offices", key: "districts" },
-  { to: "/news", key: "news" },
   { to: "/contact", key: "contact" },
+  // Hidden from the menu for now (pages still work and are linked elsewhere):
+  // { key: "services", children: [["/id-card", "nav.idcard"], ["/institutions", "nav.institutions"]] },
+  // { to: "/district-offices", key: "districts" },
+  // { to: "/news", key: "news" },
 ];
 
 // Flat list for the sitemap.
-export const NAV = [["/", "home"], ["/schemes", "schemes"], ["/disabilities", "disabilities"], ["/apply", "apply"], ["/id-card", "idcard"], ["/institutions", "institutions"],
+export const NAV = [["/", "home"], ["/donate", "donate"], ["/schemes", "schemes"], ["/disabilities", "disabilities"], ["/apply", "apply"], ["/id-card", "idcard"], ["/institutions", "institutions"],
   ["/district-offices", "districts"], ["/acts-policies", "acts"], ["/news", "news"], ["/contact", "contact"]];
 
 export default function MainNav() {

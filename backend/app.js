@@ -31,6 +31,7 @@ app.use("/api/districts", require("./routes/districts"));
 app.use("/api/news", require("./routes/news"));
 app.use("/api/documents", require("./routes/documents"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/donate", require("./routes/donations"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api", require("./routes/misc"));
 

@@ -70,7 +70,6 @@ export default function Institutions() {
               <select id="inst-type" value={type} onChange={(e) => setType(e.target.value)}><option value="">{s.all}</option>{Object.entries(s.types).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
             {list.data && <p className="muted" aria-live="polite" style={{ alignSelf: "center" }}>{s.found.replace("{n}", items.length)}</p>}
           </div>
-          {items.some((i) => i.isSample) && <div style={{ marginBottom: 14 }}><Notice kind="warn">{t("common.sampleData")}.</Notice></div>}
           {list.loading && <CardSkeletons n={3} h={60} className="grid-3" />}
           {list.error && <ErrorState error={list.error} onRetry={list.reload} />}
           {list.data && (items.length ? (
@@ -81,7 +80,7 @@ export default function Institutions() {
                 <tbody>
                   {items.map((i) => (
                     <tr key={i._id}>
-                      <td>{i.name} {i.isSample && <span className="tag tag-sample">{t("common.sample")}</span>}{i.address && <div className="muted" style={{ fontSize: ".8rem" }}>{i.address}</div>}</td>
+                      <td>{i.name}{i.address && <div className="muted" style={{ fontSize: ".8rem" }}>{i.address}</div>}</td>
                       <td>{s.types[i.type]}</td><td>{i.district}</td><td>{s.managed[i.managedBy]}</td>
                       <td>{i.phone ? <a href={`tel:${i.phone.replace(/[^\d+]/g, "")}`}>{i.phone}</a> : <span className="not-set">{t("common.notAdded")}</span>}</td>
                     </tr>

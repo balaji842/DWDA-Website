@@ -33,6 +33,10 @@ function Hero() {
   const [failed, setFailed] = useState(false);
   return (
     <section className="hero" aria-labelledby="hero-title">
+      {/* full background picture: frontend/public/images/hero.webp (illustration if missing) */}
+      {failed ? <HeroArt className="hero-bg" /> : (
+        <img className="hero-bg" src="/images/hero.webp" alt={t("hero.heroAlt")} width="1671" height="941" fetchpriority="high" onError={() => setFailed(true)} />
+      )}
       <div className="container">
         <div className="hero-copy">
           <p className="eyebrow">{t("hero.eyebrow")}</p>
@@ -48,17 +52,7 @@ function Hero() {
             <Link className="btn btn-outline" to="/track"><Search aria-hidden="true" /> {t("online.track")}</Link>
           </div>
         </div>
-        <div className="hero-media">
-          {/* AI or real photo: frontend/public/images/hero.webp — illustration until then */}
-          {failed ? <HeroArt /> : (
-            <img className="site-img" src="/images/hero.webp" alt={t("hero.heroAlt")} fetchpriority="high" onError={() => setFailed(true)} />
-          )}
-        </div>
       </div>
-      <svg className="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 60 C 360 10, 900 110, 1440 30 L1440 90 L0 90 Z" fill="#ffffff" />
-        <path d="M0 52 C 360 2, 900 102, 1440 22" stroke="#f5b400" strokeWidth="5" fill="none" />
-      </svg>
     </section>
   );
 }
@@ -129,7 +123,7 @@ function ExploreSchemes() {
       <div className="container">
         <SecHead id="schemes-title" title={t("explore.title")} sub={t("explore.sub")}
           link={<Link className="sec-link" to="/schemes">{t("explore.all")} <ArrowRight aria-hidden="true" /></Link>} />
-        {loading && <CardSkeletons n={12} h={178} className="scheme-tiles" />}
+        {loading && <CardSkeletons n={12} h={158} className="scheme-tiles" />}
         {error && <ErrorState error={error} onRetry={reload} />}
         {data && (
           <ul className="scheme-tiles">
@@ -162,7 +156,7 @@ function ServicesForEveryNeed() {
           {items.map(([to, img, key, Icon, tone]) => (
             <li key={key}>
               <Link className="sp" to={to}>
-                <SiteImage name={img} icon={Icon} tone={tone} ratio="3/2" />
+                <SiteImage name={img} icon={Icon} tone={tone} ratio="1/1" />
                 <span className="cap">{t(`svc.${key}`)}<span className="go" aria-hidden="true"><ArrowRight /></span></span>
               </Link>
             </li>
@@ -251,11 +245,8 @@ function DistrictAndQuickInfo() {
             <button type="submit" className="btn btn-primary">{t("district.view")} <ArrowRight aria-hidden="true" /></button>
             {err && <p id="home-district-err" role="alert" className="field-error" style={{ width: "100%" }}>{err}</p>}
           </form>
-          {/* decorative map pins */}
-          <svg className="map-deco" viewBox="0 0 200 220" aria-hidden="true">
-            <path d="M120 8 L150 30 L160 70 L150 100 L170 140 L150 180 L110 212 L80 200 L60 160 L30 130 L40 90 L70 70 L80 30 Z" fill="currentColor" />
-            {[[110, 60], [90, 120], [130, 150], [70, 150], [140, 95]].map(([x, y]) => <circle key={x + y} cx={x} cy={y} r="5" fill="#fff" />)}
-          </svg>
+          {/* decorative Tamil Nadu district map (background only) */}
+          <img className="map-bg" src="/images/tn-map.webp" alt="" aria-hidden="true" width="386" height="508" loading="lazy" decoding="async" />
         </div>
         <div className="panel-soft" aria-labelledby="qi-title">
           <h2 id="qi-title"><Info aria-hidden="true" />{t("qi.title")}</h2>
@@ -289,7 +280,7 @@ function AnnouncementsAndContact() {
                 <li key={n.slug}>
                   <Link to={`/news/${n.slug}`}>
                     <FileText aria-hidden="true" />
-                    <span>{tx(n.title)} {n.isSample && <span className="tag tag-sample">{t("common.sample")}</span>}</span>
+                    <span>{tx(n.title)}</span>
                     <time dateTime={n.date}>{fmtDate(n.date, lang)}</time>
                     <ChevronRight aria-hidden="true" style={{ width: 16, height: 16 }} />
                   </Link>

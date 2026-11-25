@@ -9,6 +9,7 @@ const Document = require("../models/Document");
 const Institution = require("../models/Institution");
 const Setting = require("../models/Setting");
 const Admin = require("../models/Admin");
+const Need = require("../models/Need");
 const config = require("../config");
 const { DISTRICTS } = require("../config/constants");
 
@@ -65,6 +66,36 @@ const OFFICIAL = {
   stats: { populationFigure: "13,35,219", schemesFigure: "82", rehabHomesFigure: "11", specialSchoolsFigure: "22" },
 };
 
+// Sample needs, as listed on the Namma School "Donate for Differently Abled" page (marked Sample).
+// [institution key, category, SubCategory, unit cost ₹, required quantity]
+const SAMPLE_INSTITUTIONS = {
+  pdk: { name: "Government Rehabilitation Home, Pudukkottai", type: "rehabilitation-home", district: "Pudukkottai", managedBy: "government", disability: "Leprosy cured person" },
+  slm: { name: "Govt Middle School for the Visually Impaired, Salem", type: "special-school", district: "Salem", managedBy: "government", disability: "" },
+};
+const SAMPLE_NEEDS = [
+  ["slm", "digital-infrastructure", "Printers", 6000, 1], ["slm", "electrical-infrastructure", "Extension Box", 700, 1],
+  ["slm", "electrical-infrastructure", "Motor and pump", 800, 1], ["slm", "electrical-infrastructure", "Washing Machine", 10000, 1],
+  ["slm", "health-hygiene", "New Napkin Vending Machine and Incinerator", 11000, 1], ["slm", "safety", "Bell", 300, 1],
+  ["slm", "safety", "CCTV", 6000, 10], ["slm", "renovation-maintenance", "Repairs", 5000, 1], ["slm", "special-needs", "Braille Slates and Styluses", 500, 53],
+  ["pdk", "civil-infrastructure", "Anti-Slip Flooring", 100000, 1], ["pdk", "civil-infrastructure", "Common Area", 500000, 1],
+  ["pdk", "civil-infrastructure", "Compound Wall", 200000, 1], ["pdk", "civil-infrastructure", "Gate", 50000, 1], ["pdk", "civil-infrastructure", "Ground", 200000, 1],
+  ["pdk", "civil-infrastructure", "Handrails and Grab Bars", 50000, 1], ["pdk", "civil-infrastructure", "Handwashing Station", 50000, 1],
+  ["pdk", "civil-infrastructure", "New sump", 100000, 1], ["pdk", "civil-infrastructure", "New Water Connection - Water Connection and Repairs", 30000, 1],
+  ["pdk", "civil-infrastructure", "Ramp Construction", 30000, 1], ["pdk", "civil-infrastructure", "Septic Tank", 30000, 1], ["pdk", "civil-infrastructure", "Shelters", 100000, 1],
+  ["pdk", "civil-infrastructure", "Toilet Construction", 30000, 1], ["pdk", "civil-infrastructure", "Water Tank Construction", 50000, 1], ["pdk", "civil-infrastructure", "Fencing", 30000, 1],
+  ["pdk", "health-hygiene", "CPR Resuscitation Masks and Equipment", 400, 1], ["pdk", "health-hygiene", "Face Masks", 300, 1],
+  ["pdk", "health-hygiene", "First Aid Kit - bandages, antiseptics, dressings, gloves and other basic supplies", 2000, 1],
+  ["pdk", "health-hygiene", "Hand Sanitizer and Disinfectant Wipes", 100, 1], ["pdk", "health-hygiene", "Hand Wash", 100, 1],
+  ["pdk", "medical-monitoring", "Blood Pressure Monitors", 1000, 1], ["pdk", "medical-monitoring", "Glucose Monitors", 5000, 1],
+  ["pdk", "medical-monitoring", "Stethoscopes", 500, 1], ["pdk", "medical-monitoring", "Thermometers", 100, 2],
+  ["pdk", "cleaning", "Broom", 70, 15], ["pdk", "cleaning", "Dust Pans", 20, 5], ["pdk", "cleaning", "Buckets", 80, 15], ["pdk", "cleaning", "Mops", 100, 3],
+  ["pdk", "cleaning", "Cleaner Brush", 60, 5], ["pdk", "cleaning", "Cleaning Solutions", 60, 4], ["pdk", "cleaning", "Detergent Soap", 40, 2],
+  ["pdk", "cleaning", "Disinfectant Sprays and Wipes", 150, 3], ["pdk", "cleaning", "Dustbin Cover", 150, 5], ["pdk", "cleaning", "Gloves", 190, 50],
+  ["pdk", "cleaning", "Mugs", 20, 10], ["pdk", "cleaning", "Room Spray", 200, 5], ["pdk", "cleaning", "Vacuum Cleaners", 3000, 1],
+  ["pdk", "food-kitchen", "Fridge", 8000, 1], ["pdk", "food-kitchen", "Grinder", 4000, 1], ["pdk", "food-kitchen", "Groceries", 2000, 1], ["pdk", "food-kitchen", "Mixie", 3000, 1],
+  ["pdk", "clothes-footwear", "Bedsheets", 500, 36],
+];
+
 const daysAgo = (n) => new Date(Date.now() - n * 86400000);
 const SAMPLE_NOTE = "This is sample content for demonstration. Replace it from the admin dashboard with the department's announcement.";
 const NEWS = [
@@ -116,6 +147,25 @@ async function seedIfEmpty() {
   if ((await Institution.countDocuments()) === 0) {
     await Institution.insertMany(INSTITUTIONS.map(([name, type, district, managedBy]) => ({ name: `${name}, ${district}`, type, district, managedBy, isSample: true })));
     console.log("Seeded 4 sample institutions.");
+  }
+
+  // Sample needs for the donation pages (clearly marked Sample; replace them in Admin → Needs).
+  // Older sample needs from the first version used different categories: replace those once.
+  const OLD_CATS = ["assistive-devices", "learning-materials", "therapy-equipment", "it-equipment", "infrastructure", "sports-recreation"];
+  if (await Need.exists({ category: { $in: OLD_CATS }, isSample: true })) {
+    await Need.deleteMany({ isSample: true });
+    console.log("Removed the old sample needs (replaced below).");
+  }
+  if ((await Need.countDocuments()) === 0) {
+    const inst = {};
+    for (const [key, d] of Object.entries(SAMPLE_INSTITUTIONS)) {
+      inst[key] = (await Institution.findOne({ name: d.name })) || (await Institution.create({ name: d.name, type: d.type, district: d.district, managedBy: d.managedBy, isSample: true }));
+    }
+    await Need.insertMany(SAMPLE_NEEDS.map(([key, category, sub, unitCost, qty]) => ({
+      institution: inst[key]._id, district: inst[key].district, category, disability: SAMPLE_INSTITUTIONS[key].disability,
+      title: { en: sub, ta: "" }, unitCost, quantityRequired: qty, quantityFunded: 0, isSample: true,
+    })));
+    console.log(`Seeded ${SAMPLE_NEEDS.length} sample needs for the donation pages.`);
   }
 
   // Official details published by the department (checked against scd.tn.gov.in and

@@ -31,8 +31,7 @@ export default function News() {
                   <li key={n.slug} className="news-item" style={{ gridTemplateColumns: "100px minmax(0,1fr)" }}>
                     <time dateTime={n.date}>{fmtDate(n.date, lang)}</time>
                     <div>
-                      <h2 style={{ fontSize: "1rem", fontFamily: "var(--font-body)" }}><Link to={`/news/${n.slug}`}>{tx(n.title)}</Link>
-                        {n.isSample && <span className="tag tag-sample" style={{ marginLeft: 8 }}>{t("common.sample")}</span>}</h2>
+                      <h2 style={{ fontSize: "1rem", fontFamily: "var(--font-body)" }}><Link to={`/news/${n.slug}`}>{tx(n.title)}</Link></h2>
                       {tx(n.summary) && <p className="news-sum">{tx(n.summary)}</p>}
                     </div>
                   </li>

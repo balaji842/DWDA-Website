@@ -23,7 +23,6 @@ export default function NewsDetail() {
           {n && (
             <>
               <p className="muted">{t("news.published")}: <time dateTime={n.date}>{fmtDate(n.date, lang)}</time></p>
-              {n.isSample && <div style={{ margin: "12px 0" }}><Notice kind="warn">{t("common.sampleData")}.</Notice></div>}
               {(tx(n.body) || tx(n.summary)).split(/\n+/).map((p, i) => <p key={i}>{p}</p>)}
               <p style={{ marginTop: 24 }}><Link className="link-arrow" to="/news">{t("common.allNews")}</Link></p>
             </>

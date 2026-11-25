@@ -9,5 +9,9 @@ export default function SchemeIcon({ slug }) {
     const Icon = schemeIcon(slug);
     return <span className="ico"><Icon aria-hidden="true" /></span>;
   }
-  return <img className="ico-img" src={`/images/schemes/${slug}.webp`} alt="" width="210" height="147" loading="lazy" decoding="async" onError={() => setFailed(true)} />;
+  return (
+    <span className="ico-round">
+      <img src={`/images/schemes/${slug}.webp`} alt="" width="210" height="147" loading="lazy" decoding="async" onError={() => setFailed(true)} />
+    </span>
+  );
 }

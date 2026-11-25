@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Phone, Search, X } from "lucide-react";
+import { Phone, Search, X, HandHeart } from "lucide-react";
 import { useLang } from "../context/LanguageContext.jsx";
 import { useSite } from "../context/SiteContext.jsx";
 import MainNav from "./MainNav.jsx";
 
+// Tamil Nadu State emblem + the Commissionerate's "Infinite Possibilities" logo.
+// Used in the header, footer and admin sign-in page.
 export function Emblem() {
   const { t } = useLang();
-  // Placeholder: replace with the official State emblem image supplied by the department.
-  return <span className="emblem" role="img" aria-label={t("common.emblem")}><span aria-hidden="true">State<br />emblem</span></span>;
+  return (
+    <span className="logos">
+      <img className="logo-img" src="/images/logo/tn-emblem.webp" alt={t("common.emblem")} width="64" height="64" />
+      <img className="logo-img" src="/images/logo/cwda-logo.webp" alt={t("common.deptLogo")} width="64" height="64" />
+    </span>
+  );
 }
 
 export function HelplineButton({ className = "btn btn-outline" }) {
@@ -55,6 +61,9 @@ export default function SiteHeader() {
           <span className="brand-ta" lang={lang === "en" ? "ta" : "en"} aria-hidden="true">{t("common.deptNameTa")}</span>
         </Link>
         <MainNav />
+        <Link to="/donate/quick" className={`btn btn-donate${pathname.startsWith("/donate") ? " is-active" : ""}`} aria-current={pathname.startsWith("/donate") ? "page" : undefined}>
+          <HandHeart aria-hidden="true" /> {t("nav.donate")}
+        </Link>
         <button ref={toggleBtn} type="button" className="search-btn" aria-expanded={searchOpen} aria-controls="site-search"
           aria-label={searchOpen ? t("common.closeSearch") : t("common.openSearch")} onClick={() => setSearchOpen((o) => !o)}>
           {searchOpen ? <X aria-hidden="true" /> : <Search aria-hidden="true" />}
@@ -73,4 +82,4 @@ export default function SiteHeader() {
       )}
     </header>
   );
-}
+} 
